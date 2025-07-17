@@ -1,0 +1,27 @@
+# Node modules
+node_modules/
+
+# Output build folder (for TS)
+build/
+
+# Environment variables
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS-specific
+.DS_Store
+
+# IDE-specific
+.vscode/
+.idea/
+scripts/
+
+# TypeScript
+dist/
+*.tsbuildinfo
+interview
+src/readme.md
