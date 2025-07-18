@@ -122,7 +122,6 @@ export const getSalonById = async (req: Request, res: Response) => {
 export const getAllSalons = async (_req: Request, res: Response) => {
   try {
     const salons = await Salon.find().sort({ createdAt: -1 }); // newest first
-    console.log("salons are", salons);
     res.json({ count: salons.length, salons });
   } catch (error) {
     console.error("Error fetching all salons:", error);
@@ -164,7 +163,6 @@ export const updateSalonProfile = async (req: Request, res: Response) => {
   } = req.body;
 
   const salon = await Salon.findOne({ owner: userId });
-  console.log("cord", coordinates, req.body);
   if (!salon) return res.status(404).json({ error: "Salon profile not found" });
 
   if (name) salon.name = name;

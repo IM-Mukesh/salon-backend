@@ -2,7 +2,8 @@ import { Router } from "express";
 import salonsRoute from "./salons";
 import reviewRoutes from "./reviews";
 import authRoutes from "./auth.routes";
-
+import projectRoutes from "./project.routes";
+import contactRoutes from "./contact.routes";
 const router = Router();
 
 // Health check endpoint
@@ -18,5 +19,6 @@ router.use("/salons", salonsRoute);
 router.use("/auth", authRoutes);
 
 router.use("/reviews", reviewRoutes);
-
+router.use("/projects", projectRoutes);
+router.use("/contact", contactRoutes);
 export { router as apiRoutes };
