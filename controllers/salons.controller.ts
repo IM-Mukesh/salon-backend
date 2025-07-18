@@ -22,14 +22,52 @@ export const getNearbySalons = async (req: Request, res: Response) => {
           },
           distanceField: "distance",
           spherical: true,
-          maxDistance: 50000, // 5km
         },
+      },
+      {
+        $lookup: {
+          from: "reviews", // Must be the actual collection name (check in MongoDB)
+          localField: "_id",
+          foreignField: "salon", // as per your Review schema
+          as: "reviews",
+        },
+      },
+      {
+        $addFields: {
+          totalReviews: { $size: "$reviews" },
+          averageRating: {
+            $cond: [
+              { $gt: [{ $size: "$reviews" }, 0] },
+              { $avg: "$reviews.rating" },
+              null,
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          address: 1,
+          contact: 1,
+          description: 1,
+          businessHours: 1,
+          images: 1,
+          distance: 1,
+          totalReviews: 1,
+          averageRating: { $round: ["$averageRating", 1] },
+        },
+      },
+      {
+        $sort: { distance: 1 },
+      },
+      {
+        $limit: 12,
       },
     ]);
 
     res.json({ salons });
   } catch (error) {
-    console.error("Error finding nearby salons:", error);
+    console.error("Error fetching nearby salons:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -84,6 +122,7 @@ export const getSalonById = async (req: Request, res: Response) => {
 export const getAllSalons = async (_req: Request, res: Response) => {
   try {
     const salons = await Salon.find().sort({ createdAt: -1 }); // newest first
+    console.log("salons are", salons);
     res.json({ count: salons.length, salons });
   } catch (error) {
     console.error("Error fetching all salons:", error);
@@ -125,7 +164,7 @@ export const updateSalonProfile = async (req: Request, res: Response) => {
   } = req.body;
 
   const salon = await Salon.findOne({ owner: userId });
-
+  console.log("cord", coordinates, req.body);
   if (!salon) return res.status(404).json({ error: "Salon profile not found" });
 
   if (name) salon.name = name;
@@ -145,7 +184,7 @@ export const updateSalonProfile = async (req: Request, res: Response) => {
   if (pinCode) salon.pinCode = pinCode;
 
   await salon.save();
-  res.json({ message: "Salon profile updated", salon });
+  res.json({ message: "Salon profile updated", salon, coordinates });
 };
 
 export const addSalonImage = async (req: Request, res: Response) => {
