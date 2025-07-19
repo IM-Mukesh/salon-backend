@@ -21,4 +21,5 @@ router.use("/auth", authRoutes);
 router.use("/reviews", reviewRoutes);
 router.use("/projects", projectRoutes);
 router.use("/contact", contactRoutes);
+
 export { router as apiRoutes };

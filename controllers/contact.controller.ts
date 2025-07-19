@@ -31,3 +31,21 @@ export const getAllContacts = async (_: Request, res: Response) => {
     res.status(500).json({ error: "Failed to retrieve contacts" });
   }
 };
+
+// DELETE /api/contact/:id
+export const deleteContact = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const deleted = await Contact.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Contact not found" });
+    }
+
+    res.json({ message: "Contact deleted successfully" });
+  } catch (error) {
+    console.error("Delete contact error:", error);
+    res.status(500).json({ error: "Failed to delete contact" });
+  }
+};
