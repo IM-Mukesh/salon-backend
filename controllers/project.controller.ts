@@ -22,7 +22,7 @@ export const createProject = async (req: Request, res: Response) => {
 // Get all projects
 export const getAllProjects = async (_: Request, res: Response) => {
   try {
-    const projects = await Project.find().sort({ createdAt: -1 });
+    const projects = await Project.find().sort({ createdAt: 1 });
     res.json(projects);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch projects" });
